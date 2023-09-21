@@ -64,3 +64,4 @@ shorter command: ncu -u
 # TO set environment variable, we use this in command
 
 set var_name=value(no space around = )
+export works too but not advised .. export PORT=5000

@@ -91,7 +91,18 @@ app.put("/api/courses/:id", (req, res) => {
   course.name = req.body.name;
   res.send(course);
   //*return updated data
-  return course;
+  // return course;
+});
+
+//* Multiple parameters
+
+app.get("/api/posts/:year/:month/:date", (req, res) => {
+  res.send(req.params);
+});
+
+//* querystrings
+app.get("/api/posts/:year", (req, res) => {
+  res.send(req.query);
 });
 
 //* Getting dynamically assigned port number
