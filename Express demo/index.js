@@ -10,19 +10,13 @@ app.get("/", (req, res) => {
   res.send("It's Working...");
 });
 const courses = [
-  { id: 1, name: "course1" },
-  { id: 2, name: "course2" },
-  { id: 3, name: "course3" },
+  { id: 1, name: "typescript" },
+  { id: 2, name: "Javascript" },
+  { id: 3, name: "Python" },
 ];
 //* sending response to nested url
 app.get("/api/courses", (req, res) => {
-  res.send(
-    JSON.stringify([
-      { id: 1, name: "typescript" },
-      { id: 2, name: "Javascript" },
-      { id: 3, name: "python" },
-    ])
-  );
+  res.send(courses);
 });
 
 //* sending response to parameterized request(url)
@@ -45,7 +39,7 @@ const validateCourse = (course) => {
   //* Joi validation
   //*Interface of validation
   const schema = Joi.object({
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(1).required(),
   });
   return schema.validate(course);
 };
@@ -90,6 +84,7 @@ app.put("/api/courses/:id", (req, res) => {
   //* update data
   course.name = req.body.name;
   res.send(course);
+  // res.send(courses);
   //*return updated data
   // return course;
 });
@@ -103,6 +98,20 @@ app.get("/api/posts/:year/:month/:date", (req, res) => {
 //* querystrings
 app.get("/api/posts/:year", (req, res) => {
   res.send(req.query);
+});
+
+//* Handling Delete
+app.delete("/api/courses/:id", (req, res) => {
+  //* Look up for the course
+  const courseIndex = courses.findIndex(
+    (course) => course.id === +req.params.id
+  );
+  if (courseIndex == -1) {
+    res.status(404).sendFile(`${__dirname}/doc.html`);
+    return;
+  }
+  courses.splice(courseIndex, 1);
+  res.send(courses);
 });
 
 //* Getting dynamically assigned port number
