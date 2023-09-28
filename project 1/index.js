@@ -3,7 +3,16 @@
 // import Genres from "./Genres";
 const genres = require("./Genres");
 const express = require("express");
-const log = require("../Custom Middleware/logger");
+// const log = require("../Custom Middleware/logger");
+// replacement for console.log() which trigger in specific situation specified by DEBUG env variable
+//* $env:DEBUG="app:startup"
+const startupDebugger = require("debug")("app:startup");
+//* $env:DEBUG="app:db"
+const dbDebugger = require("debug")("app:db");
+//*
+//*To trigger both $env:DEBUG="app:startup,app:db"
+//*To trigger all in particular namespace,here "app" $env:DEBUG="app:*"
+
 const helmet = require("helmet");
 const morgan = require("morgan");
 const config = require("config");
@@ -39,10 +48,10 @@ app.use(helmet());
 // const mode = process.env.NODE_ENV; //this technique returns undefined in Dev mode and true in prod mode
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
-  console.log("in dev mode");
+  startupDebugger("only in startup mode ");
 }
 
-console.log(process.env.NODE_ENV);
+dbDebugger("db logging...");
 
 //* using config package
 console.log("Application name:" + config.get("name"));
