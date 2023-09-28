@@ -10,7 +10,7 @@ const config = require("config");
 const app = express();
 
 //* Loading Middlewares
-app.use(express.json()); 
+app.use(express.json());
 //*custom middleware
 // app.use(log);
 
@@ -42,32 +42,16 @@ if (app.get("env") === "development") {
   console.log("in dev mode");
 }
 
+console.log(process.env.NODE_ENV);
+
 //* using config package
 console.log("Application name:" + config.get("name"));
 console.log("Server mail:" + config.get("mail.host"));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //* Project part
 //* GET all genres
 app.get("/api/genres", (req, res) => {
-  res.send(genres); 
+  res.send(genres);
 });
 //*GET specific genre
 app.get("/api/genres/:id", (req, res) => {
