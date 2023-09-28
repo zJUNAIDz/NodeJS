@@ -51,6 +51,9 @@ if (app.get("env") === "development") {
   startupDebugger("only in startup mode ");
 }
 
+//*Setting view engine of express to pug
+
+
 dbDebugger("db logging...");
 
 //* using config package
