@@ -1,7 +1,7 @@
 //* Create an endpoint which will send genre as response with CRUD operations [COMPLETED ✅]
 //* genre list we gonna use by default
 // import Genres from "./Genres";
-const genres = require("./Genres");
+// const genres = require("./Genres");
 const express = require("express");
 // const log = require("../Custom Middleware/logger");
 // replacement for console.log() which trigger in specific situation specified by DEBUG env variable
@@ -16,8 +16,14 @@ const dbDebugger = require("debug")("app:db");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const config = require("config");
+//* routes
+const genres = require("./routes/genres");
+const home = require("./routes/home");
 const app = express();
-
+//* THis tells that for any route that starts with '/api/genres', use genres router
+// now we can get rid of all '/api/genres' endopint in genres router file
+app.use("/api/genres", genres);
+app.use("/", home);
 //* Loading Middlewares
 app.use(express.json());
 //*custom middleware
@@ -52,7 +58,7 @@ if (app.get("env") === "development") {
 }
 
 //*Setting view engine of express to pug
-
+app.set("view engine", "pug");
 
 dbDebugger("db logging...");
 
@@ -61,62 +67,6 @@ console.log("Application name:" + config.get("name"));
 console.log("Server mail:" + config.get("mail.host"));
 
 //* Project part
-//* GET all genres
-app.get("/api/genres", (req, res) => {
-  res.send(genres);
-});
-//*GET specific genre
-app.get("/api/genres/:id", (req, res) => {
-  const genre = genres.find((genre) => genre.id === +req.params.id);
-  if (!genre) {
-    res.status(404).send("Genre with provided key not found");
-    return;
-  }
-  res.send(genre);
-});
-//*ADD a genre
-app.post("/api/genres", (req, res) => {
-  if (!req.body.name || !req.body.description) {
-    res.status(400).send("'name' and 'description' field is required");
-    return;
-  }
-  const genre = {
-    id: genres.length + 1,
-    name: req.body.name,
-    description: req.body.description,
-  };
 
-  genres.push(genre);
-  res.send(genre);
-});
-//*UPDATE a genre
-app.put("/api/genres/:id", (req, res) => {
-  if (!req.body.name || !req.body.description) {
-    res.status(400).send("Both 'name' and 'description' are required");
-    return;
-  }
-  const index = genres.findIndex((genre) => genre.id === +req.params.id);
-  if (index === -1) {
-    res.status(404).send("Genre with given ID not found!");
-    return;
-  }
-  genres[index] = {
-    ...genres[index],
-    name: req.body.name,
-    description: req.body.description,
-  };
-  res.send(genres[index]);
-});
-//*DELETE a genre
-app.delete("/api/genres/:id", (req, res) => {
-  const index = genres.findIndex((genre) => genre.id === +req.params.id);
-  if (index === -1) {
-    res.status(404).send("Genre with provided ID doesn't exist");
-    return;
-  }
-  const genre = genres[index];
-  genres.splice(index, 1);
-  res.send(genre);
-});
 //*listen to a port
 app.listen(3000);
