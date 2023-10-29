@@ -34,8 +34,11 @@ async function createCourse(courseObject) {
 
 async function getCourses() {
   return await Course
+    //*Title containing by and price >= 15
+    .find()
+    .or([{ name: /.*by*./ }, { price: { $gte: 15 } }])
     //*either frontend or backend
-    .find({ tags: { $in: ["frontend", "backend"] } })
+    // .find({ tags: { $in: ["frontend", "backend"] } })
     //* Instead of $in operator, we can use or() too
     // .or([{ tags: "frontend" }, { tags: "backend" }])
     //* Sort by price in descending order
@@ -46,8 +49,6 @@ async function getCourses() {
     // .select({ name: 1, author: 1, price: 1, tags: 1 });
     //*More syntatic sugar
     .select("name author price tags");
-
-    
   // return await Course.find({ author: /^Junaid/i })
   //   .sort({ name: 1 })
   //   .select({ name: 1, author: 1 });
