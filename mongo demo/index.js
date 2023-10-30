@@ -55,8 +55,10 @@ async function getCourse() {
   const pageSize = 10;
 
   const courses = await Course
+    //*All courses
+    .find()
     //*Starts with Mosh with case-insensitive
-    .find({ author: /^Mosh/i })
+    // .find({ author: /^Mosh/i })
     //*Contains price greater than or equal to 10
     // .find({ price: { $gte: 10 } })
     //*Ends with Hamedani $ indicates end of string
@@ -73,8 +75,67 @@ async function getCourse() {
     // .count()
     //*To select and return all documents(objects) that verifies given conditions
     //NOTE: Either use count or select, there is no meaning of selecting both at the same time!
-    .select({ name: 1, tags: 1 });
+    .select({ name: 1, tags: 1, author: 1 });
   console.log(courses);
 }
+/*
+ * Approaches:
+ * 1.Query First
+ * findById()
+ * modify its proerties
+ * save()
+ *
+ * 2.Update First
+ * Update directly
+ * Optionally: get updated docs as well
+ */
+//*1. Query First [useful when we need to check few things before updating]
+// async function updateCourse(id) {
+//   const course = await Course.findById(id);
+//   if (!course) {
+//     console.log("No such course exist...");
+//     return;
+//   }
+//   //* Setting values individually
+//   // course.isPublished = true;
+//   // course.author = "John the Don";
+//   //* Using set method
+//   course.set({
+//     isPublished: true,
+//     author: "Junaid",
+//   });
+//   //* Optionally returning result (useful in chaining)
+//   const res = await course.save();
+//   return res;
+// }
 
+//* 2. Useful in case where you are not getting input from user and just want to update database
+async function updateCourse(id) {
+  //*NOTE: syntax to update first : Course.update(conditional object, object of update operators)
+  //NOTE: We dont have to .save() it explicitly, as it saves and returns the result ( not particular course but all course after updation ) itself.
+  //*Note: refer https://www.mongodb.com/docs/manual/reference/operator/update/ for more update operators
+  //* $set used to set specific query
+
+  //*To update every docs with isPublished:false and returns the result ( not course )
+  // const result = await Course.updateMany(
+  //   { isPublished: false },
+  //   {
+  //     $set: {
+  //       isPublished: true,
+  //     },
+  //   }
+  // );
+
+  //* To upadate course at particular id and returns the result ( not course )
+  const result = await Course.updateMany(
+    { _id: id },
+    {
+      $set: {
+        author: "John the Don",
+        isPublished: false,
+      },
+    }
+  );
+}
+updateCourse("653e05561ff4353e4ae13820");
 getCourse();

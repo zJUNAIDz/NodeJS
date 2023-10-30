@@ -36,7 +36,7 @@ async function getCourses() {
   return await Course
     //*Title containing by and price >= 15
     .find()
-    .or([{ name: /.*by*./ }, { price: { $gte: 15 } }])
+    .or([{ name: /.*by*./ }, { price: { $gte: 10 } }])
     //*either frontend or backend
     // .find({ tags: { $in: ["frontend", "backend"] } })
     //* Instead of $in operator, we can use or() too
@@ -53,9 +53,42 @@ async function getCourses() {
   //   .sort({ name: 1 })
   //   .select({ name: 1, author: 1 });
 }
+
+//* Update
+async function updateCourse(id) {
+  /*
+   * Approaches:
+   * 1.Query First
+   * findById()
+   * modify its proerties
+   * save()
+   *
+   * 2.Update First
+   * Update directly
+   * Optionally: get updated docs as well
+   */
+
+  //*1.
+  const course = await Course.findById(id);
+  if (!course) {
+    console.log("No such course exist...");
+    return;
+  }
+  //* Setting values individually
+  // course.isPublished = true;
+  // course.author = "John the Don";
+  //* Using set method
+  course.set({
+    isPublished: true,
+    author: "Junaid",
+  });
+  course.save();
+}
+
 // createCourse(courseObject);
 async function display() {
   const course = await getCourses();
   console.log(course);
 }
+// updateCourse("653e99a020d5c99192230301");
 display();
