@@ -112,8 +112,9 @@ async function getCourse() {
 //* 2. Useful in case where you are not getting input from user and just want to update database
 async function updateCourse(id) {
   //*NOTE: syntax to update first : Course.update(conditional object, object of update operators)
-  //NOTE: We dont have to .save() it explicitly, as it saves and returns the result ( not particular course but all course after updation ) itself.
+  //NOTE: We dont have to .save() it explicitly, as it saves and returns the result ( of information about update like modified count, etc).
   //*Note: refer https://www.mongodb.com/docs/manual/reference/operator/update/ for more update operators
+
   //* $set used to set specific query
 
   //*To update every docs with isPublished:false and returns the result ( not course )
@@ -127,15 +128,32 @@ async function updateCourse(id) {
   // );
 
   //* To upadate course at particular id and returns the result ( not course )
-  const result = await Course.updateMany(
-    { _id: id },
+  //NOTE: If you want to update and get the those updated or original data defined by optional third parameter, we can use findByIdAndUpdate() method instead of just updateMany() or updateOne()
+  // const result = await Course.updateMany(
+  // { _id: id },
+  const result = await Course.findByIdAndUpdate(
+    id,
     {
       $set: {
-        author: "John the Don",
+        author: "Annonymous",
         isPublished: false,
       },
-    }
+    },
+    { new: true } //* with this, we get updated data instead of original data which are updated.
   );
+  console.log(result);
 }
-updateCourse("653e05561ff4353e4ae13820");
+
+//*Delete query
+async function deleteCourse(id) {
+  //* delete query with specific condition deleteOne or deleteMany
+  // const result = await Course.deleteOne({ _id: id });
+  //* delete at particular id
+  const result = await Course.findByIdAndDelete(id);
+  console.log(result);
+}
+
+// updateCourse("653e0a777b4b18d1a1898872");
+deleteCourse("653e5e83c9907da6fd659cab");
+
 getCourse();
