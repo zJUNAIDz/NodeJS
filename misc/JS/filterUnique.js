@@ -21,4 +21,4 @@ let strings = [
 ];
 let setify = new Set(strings);
 console.log(unique(strings)); // Hello, World, :-O
-console.log(Array(setify));
+console.log(Array.from(setify));
