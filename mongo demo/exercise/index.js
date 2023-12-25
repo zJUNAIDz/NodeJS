@@ -9,9 +9,53 @@ const courseSchema = mongoose.Schema({
   name: String,
   date: { type: Date, default: Date.now() },
   author: String,
-  tags: [String],
+  category: {
+    //* SchemaType on String
+    type: String,
+    required: true,
+    enum: ["web", "mobile", "desktop"],
+    lowercase: true,
+    //uppercase:true,
+    trim: true,
+  },
+  //* Custom validation
+  // tags: [String],
+  //* Synchronous validation
+  // tags: {
+  //   type: Array,
+  //   validate: {
+  //     validator: function (v) {
+  //       return v && v.length > 0;
+  //     },
+  //     message: "Tag is required!",
+  //   },
+  // },
+  tags: {
+    type: Array,
+    validate: {
+      isAsync: true,
+      validator: function (v) {
+        setTimeout(() => {
+          //* Do some async works
+          const result = v && v.length > 0;
+          // callback(result);
+        }, 2000);
+      },
+      message: "The course should have at least one tag",
+    },
+  },
+  date: { type: Date, default: Date.now },
   isPublished: Boolean,
-  price: Number,
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+    min: 0,
+    max: 1000,
+    get: (v) => Math.round(v), //* rounds off while GET data from DB
+    set: (v) => Math.round(v), //* rounds off while POST/add/modify data to DB
+  },
 });
 
 //* Making Course class
@@ -21,16 +65,29 @@ const Course = mongoose.model("Course", courseSchema);
 const courseObject = {
   name: "Python",
   author: "Junaid Shaikh",
-  tags: ["python", "AI", "ML", "Data Science"],
+  category: "web",
+  tags: ["Backend"],
   isPublished: true,
-  price: 50,
+  price: 50.9,
 };
 //* To push document to DB
 async function createCourse(courseObject) {
   const course = new Course(courseObject);
-  const result = await course.save();
-  console.log(result);
+
+  try {
+    const result = await course.save();
+    console.log(result);
+  } catch (ex) {
+    for (const err in ex.errors) {
+      console.log(err.message);
+    }
+    // console.log("fail hogaya bhay ");
+  }
+
+  // console.log(result);
 }
+
+createCourse(courseObject);
 
 async function getCourses() {
   return await Course
@@ -91,4 +148,4 @@ async function display() {
   console.log(course);
 }
 // updateCourse("653e99a020d5c99192230301");
-display();
+// display();
