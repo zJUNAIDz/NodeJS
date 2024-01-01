@@ -1,5 +1,5 @@
 
-import EventEmiter from "events";
+// import EventEmiter from "events";
 const EventEmiter = require("events");
 //* we no longer need this instance as we are extending it in Logger class
 // const emmiter = new EventEmiter();
