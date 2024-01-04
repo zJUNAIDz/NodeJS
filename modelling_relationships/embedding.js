@@ -80,11 +80,11 @@ async function removeAuthor(courseId, authorId) {
   course.save();
 }
 
-// createCourse("Node Course", new Author({ name: "Mosh" }));
-// addAuthors("6596c3e8defa8d40dca16cdf", [
-//   new Author({ name: "John wick", bio: "shooter boy", website: "nothing" }),
-// ]).then(() => {
-//   listCourses();
-// });
+createCourse("Node Course", new Author({ name: "Mosh" }));
+addAuthors("6596c3e8defa8d40dca16cdf", [
+  new Author({ name: "John wick", bio: "shooter boy", website: "nothing" }),
+]).then(() => {
+  listCourses();
+});
 removeAuthor("6596c3e8defa8d40dca16cdf", "6596c4714be0c8eb70c6d60b");
 // updateAuthor("659431dfdf944778d7bee8fc");
